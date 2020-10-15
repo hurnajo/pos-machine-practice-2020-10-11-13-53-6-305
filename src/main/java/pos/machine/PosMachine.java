@@ -13,8 +13,7 @@ public class PosMachine {
     StringBuilder output = new StringBuilder();
 
     public String printReceipt(List<String> barcodes) {
-        ItemDataLoader itemDataLoader = new ItemDataLoader();
-        List<ItemInfo> itemInfoList = getAllProductInfoByBarcode(itemDataLoader.loadBarcodes());
+        List<ItemInfo> itemInfoList = getAllProductInfoByBarcode(barcodes);
         List<Item> itemList = getQuantity(itemInfoList);
         int total = getTotalPrice(itemList);
         List list = ItemDataLoader.loadAllItemInfos();
@@ -43,19 +42,24 @@ public class PosMachine {
         return iteminfos;
     }
 
-    public List<Item> getQuantity(List<ItemInfo> barcodes) {
+    public List<ItemInfo> getDisctinctItem(List<ItemInfo> barcodes){
         List<ItemInfo> distinctItem = new ArrayList<>();
-        List<Item> itemList = new ArrayList<>();
         Set<ItemInfo> uniqueValues = new HashSet<>();
         for (ItemInfo iteminfos : barcodes) {
             if (uniqueValues.add(iteminfos)) {
                 distinctItem.add(iteminfos);
             }
         }
+        return distinctItem;
+}
+
+    public List<Item> getQuantity(List<ItemInfo> barcodes) {
+        List<ItemInfo> distinctItem = getDisctinctItem(barcodes);
+        List<Item> itemList = new ArrayList<>();
         for (ItemInfo itemInfos : distinctItem) {
             int counter = 0;
-            for (ItemInfo value1 : barcodes) {
-                if (itemInfos.equals(value1)) {
+            for (ItemInfo info : barcodes) {
+                if (itemInfos.equals(info)) {
                     counter++;
                 }
             }
